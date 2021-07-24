@@ -1,9 +1,16 @@
 ﻿<Application x:Class="EntityFrameworkWpfApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:EntityFrameworkWpfApp"
-             StartupUri="MainWindow.xaml">
+             xmlns:local="clr-namespace:EntityFrameworkWpfApp">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <!-- ReSharper disable once InconsistentNaming -->
+                    <local:AppBootstrapper x:Key="bootstrapper" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

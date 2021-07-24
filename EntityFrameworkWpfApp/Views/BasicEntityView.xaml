@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="EntityFrameworkWpfApp.Views.BasicEntityView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cal="http://www.caliburnproject.org"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="White">
+
+        <DockPanel>
+
+            <DockPanel x:Name="Controls" DockPanel.Dock="Bottom">
+                <GroupBox Margin="0, 5, 0, 0" DockPanel.Dock="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="Margin" Value="2,0"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <Button x:Name="LoadData">
+                            <TextBlock TextAlignment="Center">Load<LineBreak/>Data</TextBlock>
+                        </Button>
+
+                        <Button x:Name="SaveData">
+                            <TextBlock TextAlignment="Center">Save<LineBreak/>Data</TextBlock>
+                        </Button>
+
+                    </StackPanel>
+                </GroupBox>
+            </DockPanel>
+
+
+            <DataGrid
+                DockPanel.Dock="Top"
+
+                
+                x:Name="Forms"
+                      SelectedItem="{Binding SelectedForm}"
+                      cal:Message.Attach="[Event MouseDoubleClick] = [Action RowDoubleClick()]"
+                      Margin="0 0 0 0"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="Form Name"
+                                        Binding="{Binding FormName}"/>
+
+                    <DataGridTextColumn Header="Version"
+                                        Binding="{Binding FormVersion}"/>
+
+                    <DataGridTextColumn Header="Image File"
+                                        Binding="{Binding ImageFilename}"/>
+
+                    <DataGridTextColumn Header="Orig Image File"
+                                        Binding="{Binding OriginalImageFilename}"/>
+
+                    <DataGridTextColumn Header="Orig OCR File"
+                                        Binding="{Binding OriginalOcrFilename}"/>
+
+                    <DataGridTextColumn Header="PDF MD5 Hash"
+                                        Binding="{Binding ImageMd5Hash}"/>
+
+                    <DataGridTextColumn Header="Character Count"
+                                        Binding="{Binding CharacterCount}"/>
+
+                    <DataGridTextColumn Header="Avg Confidence"
+                                        Binding="{Binding AverageConfidence}"/>
+
+                    <DataGridTextColumn Header="Approved"
+                                        Binding="{Binding Approved}"/>
+
+                    <DataGridTextColumn Header="Edit Date"
+                                        Binding="{Binding EditDate}"/>
+
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </DockPanel>
+
+    </Grid>
+</UserControl>

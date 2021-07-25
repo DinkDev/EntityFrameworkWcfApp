@@ -9,7 +9,7 @@
     using Domain.DataAccess;
     using Domain.Models.Base;
 
-    public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
+    public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : EntityBase
     {
         protected DbContext Context { get; }
         protected bool UsingUow { get; set; }
@@ -67,6 +67,10 @@
 
         public async Task<bool> DeleteAsync(TEntity item)
         {
+            if (!Context.Set<TEntity>().Select(e => e.Id).Contains(item.Id))
+            {
+                Context.Set<TEntity>().Attach(item);
+            }
             Context.Set<TEntity>().Remove(item);
 
             if (UsingUow)

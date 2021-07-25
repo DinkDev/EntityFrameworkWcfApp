@@ -5,7 +5,8 @@
     using System.Reflection;
     using Autofac;
     using Caliburn.Micro;
-
+    using DataAccess;
+    using Domain;
     using ViewModels;
 
     /// <remarks>
@@ -33,9 +34,10 @@
                 .AsImplementedInterfaces();
 
             // register modules
-            //builder.RegisterModule(new DomainModule());
-            //builder.RegisterModule(new DataModule { DbOptions = dbOptions });
+            builder.RegisterModule(new DomainModule());
+            builder.RegisterModule(new DataAccessModule());
 
+            //builder.RegisterModule(new DataAccessModule { DbOptions = dbOptions });
             //builder.RegisterType<Settings>().As<IPackageManagerSettings>().SingleInstance();
 
             // register specific types

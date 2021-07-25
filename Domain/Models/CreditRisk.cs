@@ -1,8 +1,8 @@
-﻿namespace EntityFrameworkWpfApp.Models
+﻿namespace Domain.Models
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using DataAccess.Base;
+    using Base;
 
     public partial class CreditRisk : EntityBase
     {

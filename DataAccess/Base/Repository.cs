@@ -1,4 +1,4 @@
-﻿namespace EntityFrameworkWpfApp.DataAccess.Base
+﻿namespace DataAccess.Base
 {
     using System;
     using System.Collections.Generic;
@@ -6,6 +6,8 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using Domain.DataAccess;
+    using Domain.Models.Base;
 
     public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
     {

@@ -1,4 +1,4 @@
-﻿namespace EntityFrameworkWpfApp.DataAccess.Base
+﻿namespace Domain.Models.Base
 {
     using System.ComponentModel.DataAnnotations;
 

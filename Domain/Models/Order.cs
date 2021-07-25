@@ -1,7 +1,7 @@
-﻿namespace EntityFrameworkWpfApp.Models
+﻿namespace Domain.Models
 {
     using System.ComponentModel.DataAnnotations.Schema;
-    using DataAccess.Base;
+    using Base;
 
     public partial class Order : EntityBase
     {

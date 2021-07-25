@@ -1,4 +1,4 @@
-﻿namespace EntityFrameworkWpfApp.DataAccess
+﻿namespace Domain.DataAccess
 {
     using System;
     using System.Collections.Generic;

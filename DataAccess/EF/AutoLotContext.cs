@@ -1,9 +1,9 @@
-﻿namespace EntityFrameworkWpfApp.DataAccess.EF
+﻿namespace DataAccess.EF
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Core.Objects;
-    using Models;
+    using Domain.Models;
 
     /// <summary>
     /// Formerly AutoLotEntities
@@ -13,6 +13,14 @@
         public AutoLotContext()
             : base("name=AutoLotConnection")
         {
+            //DbInterception.Add(new ConsoleWriterInterceptor());
+
+            //DatabaseLogger.StartLogging();
+            //DbInterception.Add(DatabaseLogger);
+
+            //var context = (this as IObjectContextAdapter).ObjectContext;
+            //context.ObjectMaterialized += OnObjectMaterialized;
+            //context.SavingChanges += OnSavingChanges;
         }
 
         protected override void Dispose(bool disposing)
@@ -24,28 +32,23 @@
 
         private void OnSavingChanges(object sender, EventArgs eventArgs)
         {
-            //Sender is of type ObjectContext.  Can get current and original values, and 
-            //   cancel /modify the save operation as desired.
-            var context = sender as ObjectContext;
-            if (context == null) return;
-            foreach (ObjectStateEntry item in
-                context.ObjectStateManager.GetObjectStateEntries(EntityState.Modified | EntityState.Added))
+            // Sender is of type ObjectContext. It can get current and original values,
+            // and cancel/modify the save operation as desired.
+            if (sender is ObjectContext context)
             {
-                //Do something important here
-                if ((item.Entity as Inventory) != null)
+                foreach (ObjectStateEntry item in
+                    context.ObjectStateManager.GetObjectStateEntries(EntityState.Modified | EntityState.Added))
                 {
-                    var entity = (Inventory)item.Entity;
-                    if (entity.Color == "Red")
+                    //Do something important here
+                    if (item.Entity is Inventory inventory)
                     {
-                        item.RejectPropertyChanges(nameof(entity.Color));
+                        if (inventory.Color == "Red")
+                        {
+                            item.RejectPropertyChanges(nameof(inventory.Color));
+                        }
                     }
                 }
             }
-
-        }
-
-        private void OnObjectMaterialized(object sender, ObjectMaterializedEventArgs e)
-        {
         }
 
         public virtual DbSet<CreditRisk> CreditRisks { get; set; }

@@ -1,9 +1,9 @@
-﻿namespace EntityFrameworkWpfApp.Models
+﻿namespace Domain.Models
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using DataAccess.Base;
+    using Base;
 
     [Table("Inventory")]
     public partial class Inventory : EntityBase

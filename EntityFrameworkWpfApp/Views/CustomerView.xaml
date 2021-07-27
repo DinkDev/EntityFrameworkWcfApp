@@ -3,52 +3,60 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="White">
 
         <DockPanel>
 
-            <DockPanel x:Name="Controls" DockPanel.Dock="Right">
-                <GroupBox Margin="0, 5, 0, 0" DockPanel.Dock="Left">
-                    <StackPanel Orientation="Vertical">
-                        <StackPanel.Resources>
-                            <Style TargetType="{x:Type Button}">
-                                <Setter Property="Margin" Value="2,0"/>
-                            </Style>
-                        </StackPanel.Resources>
-                        <Button x:Name="LoadData">
-                            <TextBlock TextAlignment="Center">Load Data</TextBlock>
-                        </Button>
+            <Grid DockPanel.Dock="Right">
 
-                        <Label>First Name</Label>
-                        <TextBox x:Name="FirstName"/>
-                        
-                        <Label>Last Name</Label>
-                        <TextBox x:Name="LastName"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+   
+                <Button Grid.Row="0" x:Name="LoadData">
+                    <TextBlock TextAlignment="Center">(Re)Load Data</TextBlock>
+                </Button>
 
-                        <Button x:Name="AddNewCustomer">
-                            <TextBlock TextAlignment="Center">Add New</TextBlock>
-                        </Button>
+                <Label Grid.Row="1" >First Name</Label>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="FirstName"/>
 
-                        <Button x:Name="DeleteCustomer">
-                            <TextBlock TextAlignment="Center">Delete</TextBlock>
-                        </Button>
+                <Label Grid.Row="2">Last Name</Label>
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="LastName"/>
 
-                    </StackPanel>
-                </GroupBox>
-            </DockPanel>
+                <Button Grid.Row="3"  x:Name="AddNewCustomer">
+                    <TextBlock TextAlignment="Center">Add New</TextBlock>
+                </Button>
 
+                <Button Grid.Row="4" x:Name="UpdateCustomer">
+                    <TextBlock TextAlignment="Center">Update</TextBlock>
+                </Button>
+
+                <Button Grid.Row="5" x:Name="DeleteCustomer">
+                    <TextBlock TextAlignment="Center">Delete</TextBlock>
+                </Button>
+
+            </Grid>
 
             <DataGrid
-                DockPanel.Dock="Left"                
+                DockPanel.Dock="Left" 
                 x:Name="Customers"
-                      SelectedItem="{Binding SelectedCustomer}"
-                      Margin="0 0 0 0"
-                      ScrollViewer.VerticalScrollBarVisibility="Visible"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="True">
+                SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"
+                Margin="0 0 0 0"
+                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                AutoGenerateColumns="False"
+                IsReadOnly="True">
+
                 <DataGrid.Columns>
 
                     <DataGridTextColumn Header="Last Name"
@@ -57,7 +65,7 @@
                     <DataGridTextColumn Header="First Name"
                                         Binding="{Binding FirstName}"/>
 
-                  </DataGrid.Columns>
+                </DataGrid.Columns>
             </DataGrid>
 
         </DockPanel>

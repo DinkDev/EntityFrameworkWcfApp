@@ -3,20 +3,19 @@
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
-    using System.Threading.Tasks;
 
     public interface IRepository<TEntity, in TKey> where TEntity : class
     {
-        Task<TEntity> GetAsync(TKey id);
+        TEntity Get(TKey id);
 
-        Task<IEnumerable<TEntity>> GetAllAsync();
+        IEnumerable<TEntity> GetAll();
 
-        Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
+        IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
 
-        Task<Tuple<bool, TEntity>> CreateAsync(TEntity item);
+        Tuple<bool, TEntity> Create(TEntity item);
 
-        Task<Tuple<bool, TEntity>> UpdateAsync(TEntity item);
+        Tuple<bool, TEntity> Update(TEntity item);
 
-        Task<bool> DeleteAsync(TEntity item);
+        bool Delete(TEntity item);
     }
 }

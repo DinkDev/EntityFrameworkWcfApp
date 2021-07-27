@@ -3,16 +3,15 @@
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using Caliburn.Micro;
     using Domain.DataAccess;
     using Domain.Models;
 
     public class CustomerViewModel : PropertyChangedBase
     {
-        private Func<IUnitOfWork> _uowFactory;
-        private Customer _selectedCustomer = null;
-        private string _firstName;
-        private string _lastName;
+        private readonly Func<IUnitOfWork> _uowFactory;
+        private CustomerViewItem _selectedCustomer = null;
 
         public CustomerViewModel(Func<IUnitOfWork> uowFactory)
         {
@@ -21,35 +20,32 @@
             LoadData();
         }
 
-        public ObservableCollection<Customer> Customers { get; } = new ObservableCollection<Customer>();
+        public ObservableCollection<CustomerViewItem> Customers { get; } = new ObservableCollection<CustomerViewItem>();
 
-        public Customer SelectedCustomer
+        public CustomerViewItem SelectedCustomer
         {
-            get
-            {
-                return _selectedCustomer;
-            }
+            get => _selectedCustomer;
             set
             {
                 if (value != _selectedCustomer)
                 {
                     _selectedCustomer = value;
                     NotifyOfPropertyChange();
+                    NotifyOfPropertyChange(nameof(FirstName));
+                    NotifyOfPropertyChange(nameof(LastName));
                 }
             }
         }
 
         public string FirstName
         {
-            get
-            {
-                return _firstName;
-            }
+            get => SelectedCustomer?.FirstName ?? "NA";
             set
             {
-                if (value != _firstName)
+                if (SelectedCustomer != null
+                    && value != SelectedCustomer.FirstName)
                 {
-                    _firstName = value;
+                    SelectedCustomer.FirstName = value;
                     NotifyOfPropertyChange();
                 }
             }
@@ -57,15 +53,13 @@
 
         public string LastName
         {
-            get
-            {
-                return _lastName;
-            }
+            get => SelectedCustomer?.LastName ?? "NA";
             set
             {
-                if (value != _lastName)
+                if (SelectedCustomer != null
+                    && value != SelectedCustomer.LastName)
                 {
-                    _lastName = value;
+                    SelectedCustomer.LastName = value;
                     NotifyOfPropertyChange();
                 }
             }
@@ -77,30 +71,33 @@
 
             using (var uow = _uowFactory())
             {
-                var customers = uow.Customers.GetAllAsync()
-                                             .Result
-                                             .OrderBy(c => c.LastName + c.FirstName);
+                var customers = uow.Customers.GetAll()
+                    .OrderBy(c => c.LastName + c.FirstName);
 
                 foreach (var customer in customers)
                 {
-                    Customers.Add(customer);
+                    Customers.Add(new CustomerViewItem(customer));
                 }
             }
         }
 
         public void AddNewCustomer()
         {
-            if (!string.IsNullOrWhiteSpace(_firstName)
-                && !string.IsNullOrWhiteSpace(_lastName))
-            {
-                using (var uow = _uowFactory())
-                {
-                    var result = uow.Customers.CreateAsync(new Customer { FirstName = _firstName, LastName = _lastName }).Result;
-                    // TODO: check result
-                }
+            var newCustomer = new CustomerViewItem(new Customer{ FirstName = "First", LastName = "Last"});
+            Customers.Add(newCustomer);
+            SelectedCustomer = newCustomer;
 
-                LoadData();
-            }
+            //if (!string.IsNullOrWhiteSpace(_firstName)
+            //    && !string.IsNullOrWhiteSpace(_lastName))
+            //{
+            //    using (var uow = _uowFactory())
+            //    {
+            //        var result = uow.Customers.Create(new Customer { FirstName = _firstName, LastName = _lastName });
+            //        // TODO: check result
+            //    }
+
+            //    LoadData();
+            //}
         }
 
         public void DeleteCustomer()
@@ -109,9 +106,9 @@
             {
                 using (var uow = _uowFactory())
                 {
-                    Customer customer = uow.Customers.GetAsync(_selectedCustomer.Id).Result;
+                    Customer customer = uow.Customers.Get(_selectedCustomer.Wrapped.Id);
 
-                    if (uow.Customers.DeleteAsync(customer).Result)
+                    if (uow.Customers.Delete(customer))
                     {
                         _selectedCustomer = null;
                     }
@@ -119,6 +116,67 @@
             }
 
             LoadData();
+        }
+
+        public void UpdateCustomer()
+        {
+            using (var uow = _uowFactory())
+            {
+                foreach (var currentCustomer in Customers.Select(w => w.Wrapped))
+                {
+                    var customer = uow.Customers.Get(currentCustomer.Id);
+
+                    if (customer == null)
+                    {
+                        uow.Customers.Create(currentCustomer);
+                    }
+                    else
+                    {
+                        customer.FirstName = currentCustomer.FirstName;
+                        customer.LastName = currentCustomer.LastName;
+
+                        uow.Customers.Update(customer);
+                    }
+                }
+            }
+
+            LoadData();
+        }
+
+        public class CustomerViewItem : PropertyChangedBase
+        {
+            public CustomerViewItem(Customer wrapped)
+            {
+                Wrapped = wrapped;
+            }
+
+            public string FirstName
+            {
+                get => Wrapped.FirstName;
+                set
+                {
+                    if (value != Wrapped.FirstName)
+                    {
+                        Wrapped.FirstName = value;
+                        NotifyOfPropertyChange();
+                    }
+                }
+            }
+
+            public string LastName
+            {
+                get => Wrapped.LastName;
+                set
+                {
+                    if (value != Wrapped.LastName)
+                    {
+                        Wrapped.LastName = value;
+                        NotifyOfPropertyChange();
+                    }
+                }
+            }
+
+            public Customer Wrapped { get; set; }
         }
     }
 }

@@ -5,7 +5,6 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Linq.Expressions;
-    using System.Threading.Tasks;
     using Domain.DataAccess;
     using Domain.Models.Base;
 
@@ -20,37 +19,37 @@
             UsingUow = usingUow;
         }
 
-        public async Task<TEntity> GetAsync(TKey id)
+        public TEntity Get(TKey id)
         {
             var key = id is IComplexKey idArray ? idArray.ToArray() : new object[] { id };
 
-            return await Context.Set<TEntity>().FindAsync(key).ConfigureAwait(false);
+            return Context.Set<TEntity>().Find(key);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public IEnumerable<TEntity> GetAll()
         {
-            return await Context.Set<TEntity>().ToListAsync().ConfigureAwait(false);
+            return Context.Set<TEntity>().ToList();
         }
 
-        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return await Context.Set<TEntity>().Where(predicate).ToListAsync().ConfigureAwait(false);
+            return Context.Set<TEntity>().Where(predicate).ToList();
         }
 
-        public async Task<Tuple<bool, TEntity>> CreateAsync(TEntity item)
+        public Tuple<bool, TEntity> Create(TEntity item)
         {
             var entry = Context.Set<TEntity>().Add(item);
 
             if (UsingUow)
             {
-                var added = await Context.SaveChangesAsync().ConfigureAwait(false);
+                var added = Context.SaveChanges();
                 return Tuple.Create(added > 0, entry);
             }
 
             return Tuple.Create(true, item);
         }
 
-        public async Task<Tuple<bool, TEntity>> UpdateAsync(TEntity item)
+        public Tuple<bool, TEntity> Update(TEntity item)
         {
             Context.Set<TEntity>().Attach(item);
             var entry = Context.Entry(item);
@@ -58,14 +57,14 @@
 
             if (UsingUow)
             {
-                var updated = await Context.SaveChangesAsync().ConfigureAwait(false);
+                var updated = Context.SaveChanges();
                 return Tuple.Create(updated > 0, entry.Entity);
             }
 
             return Tuple.Create(true, item);
         }
 
-        public async Task<bool> DeleteAsync(TEntity item)
+        public bool Delete(TEntity item)
         {
             if (!Context.Set<TEntity>().Select(e => e.Id).Contains(item.Id))
             {
@@ -75,7 +74,7 @@
 
             if (UsingUow)
             {
-                var deleted = await Context.SaveChangesAsync().ConfigureAwait(false);
+                var deleted = Context.SaveChanges();
                 return deleted > 0;
             }
 
